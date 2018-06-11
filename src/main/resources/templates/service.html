@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:with="ToolKit=${T(com.moekr.kubernetes.demo.util.ToolKit)}">
+<head th:replace="fragment/head::head('Service')"></head>
+<body>
+<header th:replace="fragment/header::header"></header>
+<div class="container">
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Namespace</th>
+            <th>Name</th>
+            <th>Uid</th>
+            <th>CreationTimestamp</th>
+        </tr>
+        </thead>
+        <tbody>
+        <th:block th:each="service:${serviceList}">
+            <tr>
+                <td th:text="${service.metadata.namespace}"></td>
+                <td th:text="${service.metadata.name}"></td>
+                <td th:text="${service.metadata.uid}"></td>
+                <td th:text="${service.metadata.creationTimestamp}"></td>
+            </tr>
+            <tr>
+                <td colspan="4">
+                    <pre><code th:text="${ToolKit.toString(service)}"></code></pre>
+                </td>
+            </tr>
+        </th:block>
+        </tbody>
+    </table>
+</div>
+<footer th:replace="fragment/footer::footer"></footer>
+<div th:replace="fragment/script::script"></div>
+</body>
+</html>

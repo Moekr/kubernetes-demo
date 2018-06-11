@@ -1,0 +1,8 @@
+logging:
+  level:
+    com.moekr: debug
+
+kubernetes:
+  external-ip:
+    k8s2: 10.10.241.0/24
+    k8s3: 10.10.242.0/24

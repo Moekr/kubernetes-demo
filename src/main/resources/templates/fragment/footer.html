@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:with="ToolKit=${T(com.moekr.kubernetes.demo.util.ToolKit)}">
+<body>
+<footer class="footer" th:fragment="footer">
+    <div class="container">
+        <p class="text-center">©2018 Powered by <span th:text="${ToolKit.BANNER}"></span> ver <span th:text="${ToolKit.VERSION}"></span></p>
+    </div>
+</footer>
+</body>
+</html>
