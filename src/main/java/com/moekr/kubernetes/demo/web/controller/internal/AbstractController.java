@@ -1,9 +1,9 @@
-package com.moekr.kubernetes.demo.web.controller.view;
+package com.moekr.kubernetes.demo.web.controller.internal;
 
 import io.fabric8.kubernetes.client.KubernetesClient;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-abstract class AbstractController {
+public abstract class AbstractController {
 	protected final KubernetesClient client;
 }

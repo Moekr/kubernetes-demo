@@ -3,44 +3,38 @@ package com.moekr.kubernetes.demo.service;
 import com.moekr.kubernetes.demo.model.CreationRequest;
 import com.moekr.kubernetes.demo.model.DockerContainer;
 import com.moekr.kubernetes.demo.model.ExposedPort;
-import io.fabric8.kubernetes.api.model.Container;
-import io.fabric8.kubernetes.api.model.Namespace;
-import io.fabric8.kubernetes.api.model.Service;
-import io.fabric8.kubernetes.api.model.ServicePort;
+import com.moekr.kubernetes.demo.model.vo.Application;
+import com.moekr.kubernetes.demo.model.vo.ApplicationItem;
+import io.fabric8.kubernetes.api.model.*;
 import io.fabric8.kubernetes.api.model.extensions.Deployment;
 import io.fabric8.kubernetes.client.KubernetesClient;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import lombok.AllArgsConstructor;
 import org.springframework.util.Assert;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.moekr.kubernetes.demo.util.Constants.*;
 
-@Component
+@AllArgsConstructor
+@org.springframework.stereotype.Service
 public class ApplicationService {
 	private final KubernetesClient client;
 
-	@Autowired
-	public ApplicationService(KubernetesClient client) {
-		this.client = client;
-	}
-
-	public void createApplication(CreationRequest request) {
+	public Application createApplication(CreationRequest request) {
 		// Check namespace
 		String namespaceName = request.getNamespace();
 		checkNamespace(namespaceName);
 		// Generate application name
 		String applicationName = request.getName();
 		// Check deployment
-		String deploymentName = applicationName + DEPLOYMENT_SUFFIX;
-		Deployment deployment = client.extensions().deployments().inNamespace(namespaceName).withName(deploymentName).get();
-		Assert.isNull(deployment, "Deployment exists!");
+		Deployment deployment = client.extensions().deployments().inNamespace(namespaceName).withName(applicationName).get();
+		Assert.isNull(deployment, "已有同名部署");
 		// Create deployment
 		Set<Container> containers = request.getContainers().stream().map(DockerContainer::toContainer).collect(Collectors.toSet());
 		deployment = client.extensions().deployments().createNew()
-				.withNewMetadata().withName(deploymentName).withNamespace(namespaceName).endMetadata()
+				.withNewMetadata().withName(applicationName).withNamespace(namespaceName).endMetadata()
 				.withNewSpec().withReplicas(1)
 				.withNewSelector().addToMatchLabels(SELECTOR_LABEL, applicationName).endSelector()
 				.withNewTemplate()
@@ -49,34 +43,58 @@ public class ApplicationService {
 				.endTemplate()
 				.endSpec()
 				.done();
-		Assert.notNull(deployment, "Fail to create deployment!");
+		Assert.notNull(deployment, "创建部署失败");
 		// Check service
-		String serviceName = applicationName + SERVICE_SUFFIX;
-		Service service = client.services().inNamespace(namespaceName).withName(serviceName).get();
-		Assert.isNull(service, "Service exists!");
+		Service service = client.services().inNamespace(namespaceName).withName(applicationName).get();
+		Assert.isNull(service, "已有同名服务");
 		// Create service
 		Set<ServicePort> servicePorts = request.getPorts().stream().map(ExposedPort::toServicePort).collect(Collectors.toSet());
 		service = client.services().createNew()
-				.withNewMetadata().withName(serviceName).withNamespace(namespaceName).addToLabels(EXTERNAL_SERVICE_LABEL, serviceName).endMetadata()
+				.withNewMetadata().withName(applicationName).withNamespace(namespaceName).addToLabels(USERSPACE_LABEL, namespaceName).addToLabels(EXTERNAL_LABEL, applicationName).endMetadata()
 				.withNewSpec().addToSelector(SELECTOR_LABEL, applicationName).addAllToPorts(servicePorts).endSpec()
 				.done();
-		Assert.notNull(service, "Fail to create service!");
+		Assert.notNull(service, "创建服务失败");
+		return new Application(service, deployment);
+	}
+
+	public List<ApplicationItem> listApplication(String namespaceName) {
+		ServiceList list;
+		if (namespaceName == null) {
+			list = client.services().withLabel(USERSPACE_LABEL).list();
+		} else {
+			checkNamespace(namespaceName);
+			list = client.services().inNamespace(namespaceName).list();
+		}
+		List<Service> serviceList = list.getItems();
+		return serviceList.stream()
+				.map(ApplicationItem::new)
+				.collect(Collectors.toList());
+	}
+
+	public Application getApplication(String namespaceName, String applicationName) {
+		checkNamespace(namespaceName);
+		Service service = client.services().inNamespace(namespaceName).withName(applicationName).get();
+		Assert.notNull(service, "服务不存在");
+		Deployment deployment = client.extensions().deployments().inNamespace(namespaceName).withName(applicationName).get();
+		Assert.notNull(deployment, "部署不存在");
+		return new Application(service, deployment);
 	}
 
 	public void deleteApplication(String namespaceName, String applicationName) {
 		checkNamespace(namespaceName);
+		boolean result;
 		// Delete service
-		String serviceName = applicationName + SERVICE_SUFFIX;
-		client.services().inNamespace(namespaceName).withName(serviceName).delete();
+		result = client.services().inNamespace(namespaceName).withName(applicationName).delete();
+		Assert.isTrue(result, "服务不存在");
 		// Delete deployment
-		String deploymentName = applicationName + DEPLOYMENT_SUFFIX;
-		client.extensions().deployments().inNamespace(namespaceName).withName(deploymentName).delete();
+		result = client.extensions().deployments().inNamespace(namespaceName).withName(applicationName).delete();
+		Assert.isTrue(result, "部署不存在");
 	}
 
 	private void checkNamespace(String namespaceName) {
 		Namespace namespace = client.namespaces().withName(namespaceName).get();
-		Assert.notNull(namespace, "Namespace doesn't exist!");
+		Assert.notNull(namespace, "名称空间不存在");
 		String userspace = namespace.getMetadata().getLabels().get(USERSPACE_LABEL);
-		Assert.isTrue(namespaceName.equals(userspace), "Namespace isn't at userspace!");
+		Assert.isTrue(namespaceName.equals(userspace), "名称空间非法");
 	}
 }

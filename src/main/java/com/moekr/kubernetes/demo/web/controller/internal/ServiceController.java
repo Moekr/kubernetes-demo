@@ -1,4 +1,4 @@
-package com.moekr.kubernetes.demo.web.controller.view;
+package com.moekr.kubernetes.demo.web.controller.internal;
 
 import io.fabric8.kubernetes.api.model.Service;
 import io.fabric8.kubernetes.api.model.ServiceList;
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 
 @Controller
-@RequestMapping("/service")
+@RequestMapping("/internal/service")
 public class ServiceController extends AbstractController {
 	@Autowired
 	public ServiceController(KubernetesClient client) {
@@ -25,6 +25,6 @@ public class ServiceController extends AbstractController {
 		ServiceList list = (namespace == null ? client.services() : client.services().inNamespace(namespace)).list();
 		List<Service> serviceList = list.getItems();
 		model.addAttribute("serviceList", serviceList);
-		return "service";
+		return "internal/service";
 	}
 }

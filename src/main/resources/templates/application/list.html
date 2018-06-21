@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:with="ToolKit=${T(com.moekr.kubernetes.demo.util.ToolKit)}">
+<head th:replace="fragment/head::head('Application')"></head>
+<body>
+<header th:replace="fragment/header::header"></header>
+<div class="container">
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Namespace</th>
+            <th>Name</th>
+            <th>CreatedAt</th>
+            <th>Internal IP</th>
+            <th>External IP</th>
+            <th>Ports</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="item:${list}">
+            <td th:text="${item.namespace}"></td>
+            <td th:text="${item.name}"></td>
+            <td th:text="${item.createdAt}"></td>
+            <td th:text="${item.internalIp}"></td>
+            <td th:text="${item.externalIp}"></td>
+            <td th:text="${item.ports}"></td>
+            <td><a class="btn btn-info btn-xs" th:href="@{/application/{namespace}/{name}/(namespace=${item.namespace},name=${item.name})}">Detail</a></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<footer th:replace="fragment/footer::footer"></footer>
+<div th:replace="fragment/script::script"></div>
+</body>
+</html>

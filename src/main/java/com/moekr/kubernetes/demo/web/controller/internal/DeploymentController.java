@@ -1,4 +1,4 @@
-package com.moekr.kubernetes.demo.web.controller.view;
+package com.moekr.kubernetes.demo.web.controller.internal;
 
 import io.fabric8.kubernetes.api.model.extensions.Deployment;
 import io.fabric8.kubernetes.api.model.extensions.DeploymentList;
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 
 @Controller
-@RequestMapping("/deployment")
+@RequestMapping("/internal/deployment")
 public class DeploymentController extends AbstractController {
 	@Autowired
 	public DeploymentController(KubernetesClient client) {
@@ -25,6 +25,6 @@ public class DeploymentController extends AbstractController {
 		DeploymentList list = (namespace == null ? client.extensions().deployments() : client.extensions().deployments().inNamespace(namespace)).list();
 		List<Deployment> deploymentList = list.getItems();
 		model.addAttribute("deploymentList", deploymentList);
-		return "deployment";
+		return "internal/deployment";
 	}
 }

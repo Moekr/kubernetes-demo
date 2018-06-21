@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:with="ToolKit=${T(com.moekr.kubernetes.demo.util.ToolKit)}">
+<head th:replace="fragment/head::head('Namespace')"></head>
+<body>
+<header th:replace="fragment/header::header"></header>
+<div class="container">
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>CreatedAt</th>
+            <th>Status</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="item:${list}">
+            <td th:text="${item.name}"></td>
+            <td th:text="${item.createdAt}"></td>
+            <td th:text="${item.status}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<footer th:replace="fragment/footer::footer"></footer>
+<div th:replace="fragment/script::script"></div>
+</body>
+</html>

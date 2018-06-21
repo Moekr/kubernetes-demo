@@ -1,4 +1,4 @@
-package com.moekr.kubernetes.demo.web.controller.view;
+package com.moekr.kubernetes.demo.web.controller.internal;
 
 import io.fabric8.kubernetes.api.model.Node;
 import io.fabric8.kubernetes.api.model.NodeList;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.List;
 
 @Controller
-@RequestMapping("/node")
+@RequestMapping("/internal/node")
 public class NodeController extends AbstractController {
 	@Autowired
 	public NodeController(KubernetesClient client) {
@@ -24,6 +24,6 @@ public class NodeController extends AbstractController {
 		NodeList list = client.nodes().list();
 		List<Node> nodeList = list.getItems();
 		model.addAttribute("nodeList", nodeList);
-		return "node";
+		return "internal/node";
 	}
 }

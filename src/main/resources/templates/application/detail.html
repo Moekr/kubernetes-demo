@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:with="ToolKit=${T(com.moekr.kubernetes.demo.util.ToolKit)}">
+<head th:replace="fragment/head::head('Application Detail')"></head>
+<body>
+<header th:replace="fragment/header::header"></header>
+<div class="container">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">Detail</h3>
+        </div>
+        <div class="panel-body">
+            <p>Namespace: <span th:text="${item.namespace}"></span></p>
+            <p>Name: <span th:text="${item.name}"></span></p>
+            <p>CreatedAt: <span th:text="${item.createdAt}"></span></p>
+            <p>Internal IP: <span th:text="${item.internalIp}"></span></p>
+            <p>External IP: <span th:text="${item.externalIp}"></span></p>
+            <p>Ports: <span th:text="${item.ports}"></span></p>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">Container</h3>
+        </div>
+        <ul class="list-group">
+            <li class="list-group-item" th:each="container:${item.containers}">
+                <p>Name: <span th:text="${container.name}"></span></p>
+                <p>Image: <span th:text="${container.image}"></span></p>
+                <p>Environment: <span class="label label-info" th:each="entry:${container.env}" th:text="${entry.key+' = '+entry.value}"></span></p>
+            </li>
+        </ul>
+    </div>
+</div>
+<footer th:replace="fragment/footer::footer"></footer>
+<div th:replace="fragment/script::script"></div>
+</body>
+</html>

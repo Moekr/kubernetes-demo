@@ -15,7 +15,7 @@ import org.springframework.util.Assert;
 import javax.annotation.PostConstruct;
 import java.util.*;
 
-import static com.moekr.kubernetes.demo.util.Constants.EXTERNAL_SERVICE_LABEL;
+import static com.moekr.kubernetes.demo.util.Constants.EXTERNAL_LABEL;
 
 @CommonsLog
 @RequiredArgsConstructor
@@ -34,7 +34,7 @@ public class ExternalIpAllocator {
 			rangeMap.put(entry.getKey(), range);
 		}
 		log.debug(rangeMap);
-		List<Service> serviceList = client.services().withLabel(EXTERNAL_SERVICE_LABEL).list().getItems();
+		List<Service> serviceList = client.services().withLabel(EXTERNAL_LABEL).list().getItems();
 		for (Service service : serviceList) {
 			for (String externalIp : service.getSpec().getExternalIPs()) {
 				leaseSet.add(new IPAddressString(externalIp).getAddress());
@@ -74,7 +74,7 @@ public class ExternalIpAllocator {
 
 	@Scheduled(cron = "0 * * * * *")
 	protected void checkExternalIpAllocation() {
-		List<Service> serviceList = client.services().withLabel(EXTERNAL_SERVICE_LABEL).list().getItems();
+		List<Service> serviceList = client.services().withLabel(EXTERNAL_LABEL).list().getItems();
 		for (Service service : serviceList) {
 			String namespaceName = service.getMetadata().getNamespace();
 			String serviceName = service.getMetadata().getName();
@@ -108,7 +108,7 @@ public class ExternalIpAllocator {
 						.done();
 			}
 		}
-		serviceList = client.services().withLabel(EXTERNAL_SERVICE_LABEL).list().getItems();
+		serviceList = client.services().withLabel(EXTERNAL_LABEL).list().getItems();
 		leaseSet.clear();
 		for (Service service : serviceList) {
 			for (String externalIp : service.getSpec().getExternalIPs()) {

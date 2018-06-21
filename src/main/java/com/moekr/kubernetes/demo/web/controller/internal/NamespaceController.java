@@ -1,6 +1,5 @@
-package com.moekr.kubernetes.demo.web.controller.view;
+package com.moekr.kubernetes.demo.web.controller.internal;
 
-import com.moekr.kubernetes.demo.util.Constants;
 import io.fabric8.kubernetes.api.model.Namespace;
 import io.fabric8.kubernetes.api.model.NamespaceList;
 import io.fabric8.kubernetes.client.KubernetesClient;
@@ -13,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.List;
 
 @Controller
-@RequestMapping("/namespace")
+@RequestMapping("/internal/namespace")
 public class NamespaceController extends AbstractController {
 	@Autowired
 	public NamespaceController(KubernetesClient client) {
@@ -22,9 +21,9 @@ public class NamespaceController extends AbstractController {
 
 	@GetMapping("/")
 	public String namespace(Model model) {
-		NamespaceList list = client.namespaces().withLabel(Constants.USERSPACE_LABEL).list();
+		NamespaceList list = client.namespaces().list();
 		List<Namespace> namespaceList = list.getItems();
 		model.addAttribute("namespaceList", namespaceList);
-		return "namespace";
+		return "internal/namespace";
 	}
 }
