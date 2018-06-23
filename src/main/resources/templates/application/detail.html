@@ -14,18 +14,38 @@
             <p>CreatedAt: <span th:text="${item.createdAt}"></span></p>
             <p>Internal IP: <span th:text="${item.internalIp}"></span></p>
             <p>External IP: <span th:text="${item.externalIp}"></span></p>
-            <p>Ports: <span th:text="${item.ports}"></span></p>
         </div>
     </div>
     <div class="panel panel-default">
         <div class="panel-heading">
-            <h3 class="panel-title">Container</h3>
+            <h3 class="panel-title">Ports</h3>
+        </div>
+        <ul class="list-group">
+            <li class="list-group-item" th:each="port:${item.ports}" th:text="${port.name+': '+port.protocol+'/'+port.port}"></li>
+        </ul>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">Containers</h3>
         </div>
         <ul class="list-group">
             <li class="list-group-item" th:each="container:${item.containers}">
                 <p>Name: <span th:text="${container.name}"></span></p>
                 <p>Image: <span th:text="${container.image}"></span></p>
-                <p>Environment: <span class="label label-info" th:each="entry:${container.env}" th:text="${entry.key+' = '+entry.value}"></span></p>
+                <p>Environment:</p>
+                <p th:each="entry:${container.env}" th:text="${' - '+entry.key+' = '+entry.value}"></p>
+            </li>
+        </ul>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">Volumes</h3>
+        </div>
+        <ul class="list-group">
+            <li class="list-group-item" th:each="volume:${item.volumes}">
+                <p>Name: <span th:text="${volume.name}"></span></p>
+                <p>Storage: <a th:href="@{/storage/{namespace}/{storage}/(namespace=${item.namespace},storage=${volume.storage})}" th:text="${volume.storage}"></a></p>
+                <p>Mount Path: <span th:text="${volume.mountPath}"></span></p>
             </li>
         </ul>
     </div>

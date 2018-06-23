@@ -13,7 +13,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/internal/node")
-public class NodeController extends AbstractController {
+public class NodeController extends AbstractInternalController {
 	@Autowired
 	public NodeController(KubernetesClient client) {
 		super(client);

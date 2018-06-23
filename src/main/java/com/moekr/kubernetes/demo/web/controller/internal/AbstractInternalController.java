@@ -4,6 +4,6 @@ import io.fabric8.kubernetes.client.KubernetesClient;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-public abstract class AbstractController {
+public abstract class AbstractInternalController {
 	protected final KubernetesClient client;
 }

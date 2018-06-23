@@ -14,7 +14,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/internal/deployment")
-public class DeploymentController extends AbstractController {
+public class DeploymentController extends AbstractInternalController {
 	@Autowired
 	public DeploymentController(KubernetesClient client) {
 		super(client);

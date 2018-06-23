@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:with="ToolKit=${T(com.moekr.kubernetes.demo.util.ToolKit)}">
+<head th:replace="fragment/head::head('Storage Detail')"></head>
+<body>
+<header th:replace="fragment/header::header"></header>
+<div class="container">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">Detail</h3>
+        </div>
+        <div class="panel-body">
+            <p>Namespace: <span th:text="${item.namespace}"></span></p>
+            <p>Name: <span th:text="${item.name}"></span></p>
+            <p>CreatedAt: <span th:text="${item.createdAt}"></span></p>
+            <p>Size: <span th:text="${item.size}"></span></p>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">Applications</h3>
+        </div>
+        <ul class="list-group">
+            <li class="list-group-item" th:each="entry:${item.applications}">
+                <p>Name: <a th:href="@{/application/{namespace}/{application}/(namespace=${item.namespace},application=${entry.key})}" th:text="${entry.key}"></a></p>
+                <p>Volume: <span th:text="${entry.value}"></span></p>
+            </li>
+        </ul>
+    </div>
+</div>
+<footer th:replace="fragment/footer::footer"></footer>
+<div th:replace="fragment/script::script"></div>
+</body>
+</html>

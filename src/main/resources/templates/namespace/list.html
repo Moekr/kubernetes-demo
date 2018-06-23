@@ -10,6 +10,7 @@
             <th>Name</th>
             <th>CreatedAt</th>
             <th>Status</th>
+            <th></th>
         </tr>
         </thead>
         <tbody>
@@ -17,6 +18,10 @@
             <td th:text="${item.name}"></td>
             <td th:text="${item.createdAt}"></td>
             <td th:text="${item.status}"></td>
+            <td>
+                <a class="btn btn-info btn-xs" th:href="@{/application/{namespace}/(namespace=${item.name})}">Application</a>
+                <a class="btn btn-info btn-xs" th:href="@{/storage/{namespace}/(namespace=${item.name})}">Storage</a>
+            </td>
         </tr>
         </tbody>
     </table>

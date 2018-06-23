@@ -13,7 +13,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/internal/namespace")
-public class NamespaceController extends AbstractController {
+public class NamespaceController extends AbstractInternalController {
 	@Autowired
 	public NamespaceController(KubernetesClient client) {
 		super(client);

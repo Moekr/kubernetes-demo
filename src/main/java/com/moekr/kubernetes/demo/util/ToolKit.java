@@ -22,17 +22,22 @@ public abstract class ToolKit {
 	private static final ObjectWriter WRITER = new ObjectMapper().writer();
 	private static final int INDENT_LENGTH = 4;
 
-	public static void printObject(Object object) throws JsonProcessingException {
+	public static void printObject(Object object) {
 		printObject(object, System.out);
 	}
 
-	public static void printObject(Object object, PrintStream stream) throws JsonProcessingException {
+	public static void printObject(Object object, PrintStream stream) {
 		stream.println(toString(object));
 	}
 
-	public static String toString(Object object) throws JsonProcessingException {
+	public static String toString(Object object) {
 		Assert.notNull(object, "Object can't be null.");
-		String jsonStr = WRITER.writeValueAsString(object);
+		String jsonStr;
+		try {
+			jsonStr = WRITER.writeValueAsString(object);
+		} catch (JsonProcessingException e) {
+			return "Json process error.";
+		}
 		JSONObject json = new JSONObject(jsonStr);
 		return json.toString(INDENT_LENGTH);
 	}

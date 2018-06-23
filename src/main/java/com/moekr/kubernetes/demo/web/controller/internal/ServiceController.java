@@ -14,7 +14,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/internal/service")
-public class ServiceController extends AbstractController {
+public class ServiceController extends AbstractInternalController {
 	@Autowired
 	public ServiceController(KubernetesClient client) {
 		super(client);

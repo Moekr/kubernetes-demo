@@ -10,6 +10,8 @@ import org.springframework.core.task.TaskExecutor;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadPoolExecutor;
 
 @CommonsLog
@@ -25,6 +27,11 @@ public class Application extends SpringApplication {
 		KubernetesClient client = new DefaultKubernetesClient();
 		log.info("Connected to kubernetes api server with api version: " + client.getApiVersion());
 		return client;
+	}
+
+	@Bean
+	public ScheduledExecutorService scheduledExecutor() {
+		return Executors.newScheduledThreadPool(2 * Runtime.getRuntime().availableProcessors());
 	}
 
 	@Bean

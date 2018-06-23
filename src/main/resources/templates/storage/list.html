@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" th:with="ToolKit=${T(com.moekr.kubernetes.demo.util.ToolKit)}">
-<head th:replace="fragment/head::head('Application')"></head>
+<head th:replace="fragment/head::head('Storage')"></head>
 <body>
 <header th:replace="fragment/header::header"></header>
 <div class="container">
@@ -15,10 +15,10 @@
         </thead>
         <tbody>
         <tr th:each="item:${list}">
-            <td><a th:href="@{/application/{namespace}/(namespace=${item.namespace})}" th:text="${item.namespace}"></a></td>
+            <td><a th:href="@{/storage/{namespace}/(namespace=${item.namespace})}" th:text="${item.namespace}"></a></td>
             <td th:text="${item.name}"></td>
             <td th:text="${item.createdAt}"></td>
-            <td><a class="btn btn-info btn-xs" th:href="@{/application/{namespace}/{name}/(namespace=${item.namespace},name=${item.name})}">Detail</a></td>
+            <td><a class="btn btn-info btn-xs" th:href="@{/storage/{namespace}/{name}/(namespace=${item.namespace},name=${item.name})}">Detail</a></td>
         </tr>
         </tbody>
     </table>
