@@ -5,6 +5,8 @@ public abstract class Constants {
 	public static final String USERSPACE_LABEL = "userspace";
 	// pod的label
 	public static final String SELECTOR_LABEL = "app";
+	// 非对外service的label
+	public static final String INTERNAL_LABEL = "internal";
 	// 对外service的label
 	public static final String EXTERNAL_LABEL = "external";
 	// 持久卷访问模式

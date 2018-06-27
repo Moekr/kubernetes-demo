@@ -8,8 +8,10 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.validator.constraints.Range;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -20,6 +22,9 @@ import static com.moekr.kubernetes.demo.util.Constants.*;
 @ToString(callSuper = true)
 @NoArgsConstructor
 public class Application extends ApplicationItem {
+	@NotNull
+	@Range(min = 1, max = 3)
+	private Integer replicas;
 	@ApiModelProperty(readOnly = true)
 	private String internalIp;
 	@ApiModelProperty(readOnly = true)
@@ -31,6 +36,7 @@ public class Application extends ApplicationItem {
 
 	public Application(Service service, Deployment deployment) {
 		super(service);
+		this.replicas = deployment.getSpec().getReplicas();
 		this.internalIp = service.getSpec().getClusterIP();
 		this.externalIp = service.getSpec().getExternalIPs().toString();
 		this.ports = service.getSpec().getPorts().stream().map(Port::new).collect(Collectors.toSet());
@@ -55,7 +61,7 @@ public class Application extends ApplicationItem {
 		}
 		{
 			DeploymentSpec spec = new DeploymentSpec();
-			spec.setReplicas(1);
+			spec.setReplicas(replicas);
 			{
 				LabelSelector selector = new LabelSelector();
 				selector.setMatchLabels(Collections.singletonMap(SELECTOR_LABEL, applicationName));
@@ -93,7 +99,7 @@ public class Application extends ApplicationItem {
 			{
 				Map<String, String> labels = new HashMap<>();
 				labels.put(USERSPACE_LABEL, namespace);
-				labels.put(EXTERNAL_LABEL, name);
+				labels.put(replicas == 1 ? EXTERNAL_LABEL : INTERNAL_LABEL, name);
 				metadata.setLabels(labels);
 			}
 			service.setMetadata(metadata);
